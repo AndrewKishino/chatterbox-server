@@ -11,9 +11,9 @@ this file and include it in basic-server.js so that it actually works.
 *Hint* Check out the node module documentation at http://nodejs.org/api/modules.html.
 
 **************************************************************/
-result = []
+result = [];
 var requestHandler = function(request, response) {
-  var obj = {results: result}
+  // var obj = {results: result};
   // Request and Response come from node's http module.
   //
   // They include information about both the incoming request, such as
@@ -35,7 +35,7 @@ var requestHandler = function(request, response) {
 
   // See the note below about CORS headers.
   var headers = defaultCorsHeaders;
-  var statusCode = 404
+  var statusCode = 404;
   // Tell the client we are sending them plain text.
   //
   // You will need to change this if you are sending something
@@ -51,10 +51,10 @@ var requestHandler = function(request, response) {
       var jsonString = '';
       request.on('data', function(data){
         jsonString += data;
-      })
+      });
       request.on('end', function(){
         result.push(JSON.parse(jsonString))
-      })
+      });
     }
   }
 
@@ -64,8 +64,8 @@ var requestHandler = function(request, response) {
   // .writeHead() writes to the request line and headers of the response,
   // which includes the status and all headers.
 
-   response.writeHead(statusCode, headers);
-
+  response.writeHead(statusCode, headers);
+  var obj = {results: result};
   // Make sure to always call response.end() - Node may not send
   // anything back to the client until you do. The string you pass to
   // response.end() will be the body of the response - i.e. what shows
@@ -74,7 +74,7 @@ var requestHandler = function(request, response) {
   // Calling .end "flushes" the response's internal buffer, forcing
   // node to actually send all the data over to the client.
 
-   response.end(JSON.stringify(obj));
+  response.end(JSON.stringify(obj));
 };
 
 // These headers will allow Cross-Origin Resource Sharing (CORS).
@@ -90,7 +90,7 @@ var defaultCorsHeaders = {
   "access-control-allow-origin": "*",
   "access-control-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
   "access-control-allow-headers": "content-type, accept",
-  "access-control-max-age": 6 // Seconds.
+  "access-control-max-age": 10 // Seconds.
 };
 
 exports.requestHandler = requestHandler;

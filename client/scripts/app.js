@@ -11,6 +11,7 @@ $(function() {
     roomname: 'lobby',
     lastMessageId: 0,
     friends: {},
+    createdAt: 0,
 
     init: function() {
       // Get username
@@ -49,7 +50,7 @@ $(function() {
         success: function (data) {
           //console.log('chatterbox: Message sent');
           // Trigger a fetch to update the messages, pass true to animate
-          app.fetch();
+          app.fetch(true);
         },
         error: function (data) {
           console.error('chatterbox: Failed to send message');
@@ -61,10 +62,10 @@ $(function() {
         url: app.server,
         type: 'GET',
         contentType: 'application/json',
-        data: { order: '-createdAt'},
+        data: { order: 'createdAt'},
         success: function(data) {
           //console.log('chatterbox: Messages fetched');
-          //console.log(data);
+          console.log(data);
 
           // Don't bother if we have nothing to work with
           if (!data.results || !data.results.length) { return; }
@@ -74,7 +75,10 @@ $(function() {
           var displayedRoom = $('.chat span').first().data('roomname');
           app.stopSpinner();
           // Only bother updating the DOM if we have a new message
-          if (mostRecentMessage.objectId !== app.lastMessageId || app.roomname !== displayedRoom) {
+
+          // All apps have a default id of 0 so we need to comment this condition
+          // if (mostRecentMessage.objectId !== app.lastMessageId || app.roomname !== displayedRoom) {
+
             // Update the UI with the fetched rooms
             app.populateRooms(data.results);
 
@@ -83,7 +87,10 @@ $(function() {
 
             // Store the ID of the most recent message
             app.lastMessageId = mostRecentMessage.objectId;
-          }
+
+          // Disregard the chat id's
+          // }
+
         },
         error: function(data) {
           console.error('chatterbox: Failed to fetch messages');
@@ -214,7 +221,8 @@ $(function() {
       var message = {
         username: app.username,
         text: app.$message.val(),
-        roomname: app.roomname || 'lobby'
+        roomname: app.roomname || 'lobby',
+        createdAt: moment().format()
       };
 
       app.send(message);
